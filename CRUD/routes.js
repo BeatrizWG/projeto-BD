@@ -8,10 +8,13 @@ router.get('/api/products/get', async (req, res) => {
     try {
         const products = await Product.find(); 
         if (products.length === 0) {
+            logger.error(`Nenhum produto encontrado`);
             res.status(404).json({ error: 'Nenhum produto encontrado.' });
             return; 
         }
+        logger.info(`Exibindo a lista com todos os produtos`);
         res.status(200).json(products);
+
     } catch (err) {
         logger.error(`Erro ao buscar produtos: ${err}`);
         res.status(500).send('Erro ao buscar produtos.');
@@ -21,13 +24,16 @@ router.get('/api/products/get', async (req, res) => {
 router.get('/api/products/get/:id', async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'ID inválido.' });
+        logger.error(`O ID ${id} é inválido.`);
+        return res.status(400).json({ error: 'ID inválido.' });   
     }
     try {
         const product = await Product.findById(id);
         if (!product) {
+            logger.error(`O produto com ID ${id} não foi encontrado.`);
             return res.status(404).send('Produto não encontrado.');
         }
+        logger.info(`Exibindo produto com ID: ${id}.`);
         res.status(200).json(product);
     } catch (err) {
         logger.error(`Erro ao buscar produto: ${err}`);
@@ -35,23 +41,44 @@ router.get('/api/products/get/:id', async (req, res) => {
     }
 });
 
+router.get('/api/products/get/:categoria', async (req, res) => {
+    const { categoria } = req.params;
+    try {
+        const products = await Product.find({ categoria });
+        if (products.length === 0) {
+            logger.error(`Os produtos da categoria ${categoria} não foram encontrados.`);
+            return res.status(404).send('Produtos não encontrados.');
+        }
+        logger.info(`Exibindo os produtos da categoria: ${categoria}.`);
+        res.status(200).json(products);
+    } catch (err) {
+        logger.error(`Erro ao buscar produtos: ${err}`);
+        res.status(500).send('Erro ao buscar produtos.');
+    }
+});
+
 router.post('/api/products/post', async (req, res) => {
-    const {nome, descricao, quantidade, valor } = req.body;
-    if (!nome || !descricao || quantidade === undefined || valor === undefined) {
+    const {nome, categoria, descricao, quantidade, valor } = req.body;
+    if (!nome || !categoria || !descricao || quantidade === undefined || valor === undefined) {
+        logger.error(`Todos os campos são obrigatórios.`);
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
-    if (typeof nome !== 'string' || typeof descricao !== 'string') {
-        return res.status(400).json({ error: 'Nome e descrição devem ser do tipo string.' });
+    if (typeof nome !== 'string' || typeof categoria !== 'string' || typeof descricao !== 'string') {
+        logger.error(`Nome, categoria e descrição devem ser do tipo string.`);
+        return res.status(400).json({ error: 'Nome, categoria e descrição devem ser do tipo string.' });
     }
     if (!Number.isInteger(quantidade) || quantidade <= 0) {
-        return res.status(400).json({ error: 'Quantidade deve ser um número inteiro não negativo.' });
+        logger.error(`Quantidade deve ser um número inteiro maior que zero.`);
+        return res.status(400).json({ error: 'Quantidade deve ser um número inteiro maior que zero.' });
     }
     if (typeof valor !== 'number' || valor <= 0) {
+        logger.error(`Valor deve ser um número positivo.`);
         return res.status(400).json({ error: 'Valor deve ser um número positivo.' });
     }
-    const newProduct = new Product({ nome, descricao, quantidade, valor });
+    const newProduct = new Product({ nome, categoria, descricao, quantidade, valor });
     try {
         await newProduct.save();
+        logger.info(`Produto criado com sucesso!`);
         res.status(201).send('Produto criado com sucesso!');
     } catch (err) {
         logger.error(`Erro ao criar produto: ${err}`);
@@ -62,21 +89,25 @@ router.post('/api/products/post', async (req, res) => {
 router.put('/api/products/put/:id', async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
+        logger.error(`O ID ${id} é inválido`);
         return res.status(400).json({ error: 'ID inválido.' });
     }
-    const { nome, descricao, quantidade, valor } = req.body;
-    if (!nome || !descricao || quantidade === undefined || valor === undefined) {
+    const { nome, categoria, descricao, quantidade, valor } = req.body;
+    if (!nome|| !categoria || !descricao || !categoria|| quantidade === undefined || valor === undefined) {
+        logger.error(`Todos os campos são obrigatórios.`);
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
     try {
         const updatedProduct = await Product.findByIdAndUpdate(
             id, 
-            { nome, descricao, quantidade, valor },
+            { nome, categoria, descricao, quantidade, valor },
             { new: true, runValidators: true } 
         );
         if (!updatedProduct) {
+            logger.error(`O produto com ID ${id} não foi encontrado.`);
             return res.status(404).send('Produto não encontrado.');
         }
+        logger.info(`O produto com ID ${id} foi atualizado com sucesso.`);
         res.status(200).json(updatedProduct);
     } catch (err) {
         logger.error(`Erro ao atualizar produto: ${err}`);
@@ -87,13 +118,16 @@ router.put('/api/products/put/:id', async (req, res) => {
 router.delete('/api/products/delete/:id', async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
+        logger.error(`O ID ${id} é inválido`);
         return res.status(400).json({ error: 'ID inválido.' });
     }
     try {
         const deletedProduct = await Product.findByIdAndDelete(id); 
         if (!deletedProduct) {
+            logger.error(`O produto com ID ${id} não foi encontrado.`);
             return res.status(404).send('Produto não encontrado.');
         }
+        logger.info(`O produto com ID ${id} foi excluído com sucesso.`);
         res.status(200).send('Produto excluído com sucesso.');
     } catch (err) {
         logger.error(`Erro ao excluir produto: ${err}`);

@@ -6,14 +6,19 @@ const productSchema = new mongoose.Schema({
         required: [true, 'O nome do produto é obrigatório.'], 
         trim: true, 
     },
-    descricao: { 
+    categoria: { 
         type: String, 
-        required: [true, 'A descrição do produto é obrigatória.'], 
+        required: [true, 'A Categoria do produto é obrigatória.'], 
+        trim: true,
+    },    descricao: { 
+        type: String, 
+        required: [false], 
         trim: true,
     },
     quantidade: { 
         type: Number, 
         required: [true, 'A quantidade do produto é obrigatória.'], 
+        min: [0, 'A quantidade do produto deve ser maior que zero.'] ,
         validate: {
             validator: Number.isInteger, 
             message: 'A quantidade deve ser um número inteiro.'
