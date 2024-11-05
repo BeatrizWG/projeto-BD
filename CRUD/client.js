@@ -1,6 +1,6 @@
 async function listarProdutos() {
     try {
-        const response = await fetch('http://localhost:5002/api/products/get');
+        const response = await fetch('http://localhost:5002/api/products');
         const data = await response.json();
         
         if (!response.ok) throw new Error(data.error);
@@ -15,7 +15,7 @@ async function listarProdutos() {
 
 async function listarProdutosCategoria(categoria) {
     try {
-        const response = await fetch(`http://localhost:5002/api/products/get/${categoria}`);
+        const response = await fetch(`http://localhost:5002/api/products/categoria/${categoria}`);
         const data = await response.json();
 
         if (!response.ok) throw new Error(data.error);
@@ -30,7 +30,7 @@ async function listarProdutosCategoria(categoria) {
 
 async function buscarProdutoId(id) {
     try {
-        const response = await fetch(`http://localhost:5002/api/products/get/${id}`);
+        const response = await fetch(`http://localhost:5002/api/products/${id}`);
         const data = await response.json();
 
         if (!response.ok) throw new Error(data.error);
@@ -45,7 +45,7 @@ async function buscarProdutoId(id) {
 
 async function adicionarProduto(produto) {
     try {
-        const response = await fetch('http://localhost:5002/api/products/post', {
+        const response = await fetch('http://localhost:5002/api/products', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ async function adicionarProduto(produto) {
 
 async function atualizarProduto(id, produto) {
     try {
-        const response = await fetch(`http://localhost:5002/api/products/put/${id}`, {
+        const response = await fetch(`http://localhost:5002/api/products/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ async function atualizarProduto(id, produto) {
 
 async function excluirProduto(id) {
     try {
-        const response = await fetch(`http://localhost:5002/api/products/delete/${id}`, {
+        const response = await fetch(`http://localhost:5002/api/products/${id}`, {
             method: 'DELETE',
         });
 

@@ -10,7 +10,8 @@ const productSchema = new mongoose.Schema({
         type: String, 
         required: [true, 'A Categoria do produto é obrigatória.'], 
         trim: true,
-    },    descricao: { 
+    },    
+    descricao: { 
         type: String, 
         required: [false], 
         trim: true,
@@ -28,6 +29,11 @@ const productSchema = new mongoose.Schema({
         type: Number, 
         required: [true, 'O valor do produto é obrigatório.'], 
         min: [0, 'O valor do produto deve ser positivo.'] 
+    },
+    link: {
+        type: String,
+        required: [true, 'O link do produto é obrigatório.'],
+        match: [/^https?:\/\/[^\s$.?#].[^\s]*$/, 'O link do produto deve ser uma URL válida.']
     }
 });
 

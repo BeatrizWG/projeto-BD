@@ -4,7 +4,7 @@ const Product = require('./schema.js');
 const logger = require("./logger.js");
 const mongoose = require('mongoose');
 
-router.get('/api/products/get', async (req, res) => {
+router.get('/api/products', async (req, res) => {
     try {
         const products = await Product.find(); 
         if (products.length === 0) {
@@ -21,7 +21,7 @@ router.get('/api/products/get', async (req, res) => {
     }
 });
 
-router.get('/api/products/get/:id', async (req, res) => {
+router.get('/api/products/:id', async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         logger.error(`O ID ${id} é inválido.`);
@@ -41,7 +41,7 @@ router.get('/api/products/get/:id', async (req, res) => {
     }
 });
 
-router.get('/api/products/get/:categoria', async (req, res) => {
+router.get('/api/products/categoria/:categoria', async (req, res) => {
     const { categoria } = req.params;
     try {
         const products = await Product.find({ categoria });
@@ -57,14 +57,14 @@ router.get('/api/products/get/:categoria', async (req, res) => {
     }
 });
 
-router.post('/api/products/post', async (req, res) => {
-    const {nome, categoria, descricao, quantidade, valor } = req.body;
-    if (!nome || !categoria || !descricao || quantidade === undefined || valor === undefined) {
+router.post('/api/products', async (req, res) => {
+    const {nome, categoria, descricao, quantidade, valor, link } = req.body;
+    if (!nome || !categoria || !descricao || !link ||  quantidade === undefined || valor === undefined) {
         logger.error(`Todos os campos são obrigatórios.`);
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
-    if (typeof nome !== 'string' || typeof categoria !== 'string' || typeof descricao !== 'string') {
-        logger.error(`Nome, categoria e descrição devem ser do tipo string.`);
+    if (typeof nome !== 'string' || typeof categoria !== 'string' || typeof descricao !== 'string' || typeof link !== 'string') {
+        logger.error(`Nome, categoria, descrição e o link da imagem devem ser do tipo string.`);
         return res.status(400).json({ error: 'Nome, categoria e descrição devem ser do tipo string.' });
     }
     if (!Number.isInteger(quantidade) || quantidade <= 0) {
@@ -75,7 +75,7 @@ router.post('/api/products/post', async (req, res) => {
         logger.error(`Valor deve ser um número positivo.`);
         return res.status(400).json({ error: 'Valor deve ser um número positivo.' });
     }
-    const newProduct = new Product({ nome, categoria, descricao, quantidade, valor });
+    const newProduct = new Product({ nome, categoria, descricao, quantidade, valor, link});
     try {
         await newProduct.save();
         logger.info(`Produto criado com sucesso!`);
@@ -86,21 +86,21 @@ router.post('/api/products/post', async (req, res) => {
     }
 });
 
-router.put('/api/products/put/:id', async (req, res) => {
+router.put('/api/products/:id', async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         logger.error(`O ID ${id} é inválido`);
         return res.status(400).json({ error: 'ID inválido.' });
     }
-    const { nome, categoria, descricao, quantidade, valor } = req.body;
-    if (!nome|| !categoria || !descricao || !categoria|| quantidade === undefined || valor === undefined) {
+    const { nome, categoria, descricao, quantidade, valor, link} = req.body;
+    if (!nome|| !categoria || !descricao || !categoria || !link|| quantidade === undefined || valor === undefined) {
         logger.error(`Todos os campos são obrigatórios.`);
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
     try {
         const updatedProduct = await Product.findByIdAndUpdate(
             id, 
-            { nome, categoria, descricao, quantidade, valor },
+            { nome, categoria, descricao, quantidade, valor, link },
             { new: true, runValidators: true } 
         );
         if (!updatedProduct) {
@@ -115,7 +115,7 @@ router.put('/api/products/put/:id', async (req, res) => {
     }
 });
 
-router.delete('/api/products/delete/:id', async (req, res) => {
+router.delete('/api/products/:id', async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         logger.error(`O ID ${id} é inválido`);
