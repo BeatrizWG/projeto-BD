@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 const PORT = 5002;
 
@@ -7,6 +8,7 @@ const logger = require("./logger.js");
 const database = require('./mongo');
 
 app.use(express.json());
+app.use(morgan('tiny'));
 app.use(routes);
 database()
 
