@@ -4,6 +4,7 @@ const Product = require('./schema.js');
 const logger = require("./logger.js");
 const mongoose = require('mongoose');
 
+
 router.get('/api/products', async (req, res) => {
     try {
         const products = await Product.find();
