@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('./schema.js'); 
+const Product = require('./schema.js');
 const logger = require("./logger.js");
 const mongoose = require('mongoose');
 
 router.get('/api/products', async (req, res) => {
     try {
-        const products = await Product.find(); 
+        const products = await Product.find();
         if (products.length === 0) {
             logger.error(`Nenhum produto encontrado`);
             res.status(404).json({ error: 'Nenhum produto encontrado.' });
-            return; 
+            return;
         }
         logger.info(`Exibindo a lista com todos os produtos`);
         res.status(200).json(products);
@@ -25,7 +25,7 @@ router.get('/api/products/:id', async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         logger.error(`O ID ${id} é inválido.`);
-        return res.status(400).json({ error: 'ID inválido.' });   
+        return res.status(400).json({ error: 'ID inválido.' });
     }
     try {
         const product = await Product.findById(id);
@@ -58,8 +58,8 @@ router.get('/api/products/categoria/:categoria', async (req, res) => {
 });
 
 router.post('/api/products', async (req, res) => {
-    const {nome, categoria, descricao, quantidade, valor, link } = req.body;
-    if (!nome || !categoria || !descricao || !link ||  quantidade === undefined || valor === undefined) {
+    const { nome, categoria, descricao, quantidade, valor, link } = req.body;
+    if (!nome || !categoria || !descricao || !link || quantidade === undefined || valor === undefined) {
         logger.error(`Todos os campos são obrigatórios.`);
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
@@ -75,7 +75,7 @@ router.post('/api/products', async (req, res) => {
         logger.error(`Valor deve ser um número positivo.`);
         return res.status(400).json({ error: 'Valor deve ser um número positivo.' });
     }
-    const newProduct = new Product({ nome, categoria, descricao, quantidade, valor, link});
+    const newProduct = new Product({ nome, categoria, descricao, quantidade, valor, link });
     try {
         await newProduct.save();
         logger.info(`Produto criado com sucesso!`);
@@ -92,16 +92,16 @@ router.put('/api/products/:id', async (req, res) => {
         logger.error(`O ID ${id} é inválido`);
         return res.status(400).json({ error: 'ID inválido.' });
     }
-    const { nome, categoria, descricao, quantidade, valor, link} = req.body;
-    if (!nome|| !categoria || !descricao || !categoria || !link|| quantidade === undefined || valor === undefined) {
+    const { nome, categoria, descricao, quantidade, valor, link } = req.body;
+    if (!nome || !categoria || !descricao || !categoria || !link || quantidade === undefined || valor === undefined) {
         logger.error(`Todos os campos são obrigatórios.`);
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
     }
     try {
         const updatedProduct = await Product.findByIdAndUpdate(
-            id, 
+            id,
             { nome, categoria, descricao, quantidade, valor, link },
-            { new: true, runValidators: true } 
+            { new: true, runValidators: true }
         );
         if (!updatedProduct) {
             logger.error(`O produto com ID ${id} não foi encontrado.`);
@@ -122,7 +122,7 @@ router.delete('/api/products/:id', async (req, res) => {
         return res.status(400).json({ error: 'ID inválido.' });
     }
     try {
-        const deletedProduct = await Product.findByIdAndDelete(id); 
+        const deletedProduct = await Product.findByIdAndDelete(id);
         if (!deletedProduct) {
             logger.error(`O produto com ID ${id} não foi encontrado.`);
             return res.status(404).send('Produto não encontrado.');
