@@ -29,13 +29,14 @@ const api = {
     return response.data
   },
 
-  async editItem(name, price, id, description, category, amount) {
+  async editItem(name, price, description, category, amount, link, id) {
     const response = await axios.put(this.url + `/api/products/${id}`, {
       nome: name,
       valor: price,
       descricao: description,
       categoria: category,
       quantidade: amount,
+      link,
     }, {
       headers: {
         "Content-Type": "application/json",

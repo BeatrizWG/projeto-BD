@@ -12,9 +12,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "react-hook-form"
 import { useState, useEffect } from "react";
+import api from "@/pages/api/api"
 
-export default function DialogEdit({ item, editItem }) {
+export default function DialogEdit({ item }) {
     const [formData, setFormData] = useState({
         name: "",
         category: "",
@@ -55,7 +57,10 @@ export default function DialogEdit({ item, editItem }) {
             [id]: value
         }));
     };
-
+    const { register, handleSubmit } = useForm()
+    function editItem(itemEdit) {
+        api.editItem(itemEdit.name, parseInt(itemEdit.value), itemEdit.description, itemEdit.category, parseInt(itemEdit.amount), item.link, item._id)  
+    }
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -68,42 +73,42 @@ export default function DialogEdit({ item, editItem }) {
                         Preencha os campos que deseja atualizar e clique em "Save".
                     </DialogDescription>
                 </DialogHeader>
-                <form className="gap-4 py-4">
+                <form className="gap-4 py-4" onSubmit={handleSubmit(editItem)}>
                     <div className="items-center gap-4">
                         <Label htmlFor="name" className="text-right text-black">
                             Name
                         </Label>
-                        <Input id="name" value={formData.name} onChange={handleChange} className="col-span-3 text-black w-1/2" />
+                        <Input {...register("name")} id="name" value={formData.name} onChange={handleChange} className="col-span-3 text-black w-1/2" />
                     </div>
                     <div className="items-center gap-4">
                         <Label htmlFor="category" className="text-right text-black">
                             Category
                         </Label>
-                        <Input id="category" value={formData.category} onChange={handleChange} className="col-span-3 text-black w-1/2" />
+                        <Input {...register("category")} id="category" value={formData.category} onChange={handleChange} className="col-span-3 text-black w-1/2" />
                     </div>
                     <div className="items-center gap-4">
                         <Label htmlFor="link" className="text-right text-black">
                             ImageLink
                         </Label>
-                        <Input id="link" value={formData.link} onChange={handleChange} className="col-span-3 text-black w-1/2" />
+                        <Input {...register("link")} id="link" value={formData.link} onChange={handleChange} className="col-span-3 text-black w-1/2" />
                     </div>
                     <div className="items-center gap-4">
                         <Label htmlFor="amount" className="text-right text-black">
                             Amount (units)
                         </Label>
-                        <Input type="number" id="amount" value={formData.amount} onChange={handleChange} className="col-span-3 text-black w-20" />
+                        <Input {...register("amount")} type="number" id="amount" value={formData.amount} onChange={handleChange} className="col-span-3 text-black w-20" />
                     </div>
                     <div className="items-center gap-4">
                         <Label htmlFor="value" className="text-right text-black">
                             Value (R$)
                         </Label>
-                        <Input type="number" id="value" value={formData.value} onChange={handleChange} className="col-span-3 text-black w-20" />
+                        <Input {...register("value")} type="number" id="value" value={formData.value} onChange={handleChange} className="col-span-3 text-black w-20" />
                     </div>
                     <div className="items-center gap-4">
                         <Label htmlFor="description" className="text-right text-black">
                             Description
                         </Label>
-                        <Textarea id="description" value={formData.description} onChange={handleChange} className="col-span-3 text-black w-3/4" />
+                        <Textarea {...register("description")} id="description" value={formData.description} onChange={handleChange} className="col-span-3 text-black w-3/4" />
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
@@ -115,6 +120,6 @@ export default function DialogEdit({ item, editItem }) {
                     </DialogFooter>
                 </form>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     );
 }

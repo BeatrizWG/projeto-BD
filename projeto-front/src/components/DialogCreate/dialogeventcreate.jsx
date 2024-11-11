@@ -18,12 +18,12 @@ import api from "@/pages/api/api"
 export default function DialogCreate() {
     const { register, handleSubmit } = useForm()
     function createItem(item) {
-        api.createItem(item.name, item.value, item.description, item.category, item.amount, item.link)
+        api.createItem(item.name, parseInt(item.value), item.description, item.category, parseInt(item.amount), item.link)
     }
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline" className="bg-blue-500 text-white">+</Button>
+                <Button variant="outline" className="bg-blue-500 text-white w-20 self-center rounded-full">+</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[900px]">
                 <DialogHeader className="mb-5">
@@ -79,7 +79,7 @@ export default function DialogCreate() {
                             </Button>
                         </DialogClose>
                         <DialogClose>
-                            <Button variant="outline" className="bg-green-600" type="submit">Save</Button>
+                            <Button variant="outline" className="bg-green-600" type="submit" >Save</Button>
                         </DialogClose>
                     </DialogFooter>
                 </form>
