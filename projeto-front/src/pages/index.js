@@ -45,7 +45,7 @@ export default function Home({ data }) {
               {/* Nome e Descrição */}
               <div className="flex-1 text-base text-gray-800">
                 <div className="font-semibold">{item.nome}</div>
-                <p className="text-sm text-gray-600">{item.descricao}</p>
+                <p className="text-sm text-gray-600 w-2">{item.descricao}</p>
               </div>
 
               {/* Botões */}
