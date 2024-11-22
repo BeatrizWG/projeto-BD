@@ -42,7 +42,7 @@ Instalação
 
 1. Clone o repositório:
 
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
+git clone https://github.com/BeatrizWG/projeto-BD.git
 
 
 2. Instale as dependências e rode o backend:
