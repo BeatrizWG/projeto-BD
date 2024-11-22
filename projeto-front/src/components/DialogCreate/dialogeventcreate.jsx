@@ -29,7 +29,7 @@ export default function DialogCreate() {
                 <DialogHeader className="mb-5">
                     <DialogTitle className="text-black text-center mb-5">Vamos criar um novo item.</DialogTitle>
                     <DialogDescription className="text-center ">
-                        Preencha os campos que deseja atualizar e clique em "Save".
+                        Preencha os campos que deseja atualizar e clique em &lsquo;Save&lsquo;.
                     </DialogDescription>
                 </DialogHeader>
                 <form className=" gap-4 py-4" onSubmit={handleSubmit(createItem)}>
